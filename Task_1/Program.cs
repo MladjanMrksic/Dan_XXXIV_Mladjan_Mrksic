@@ -19,22 +19,22 @@ namespace Task_1
         {            
             //Greeting message followed by user input for queue lenghts
             Console.WriteLine("\t\t\tWelcome to BankSimulation");
-            int firstLine;
+            int firstQueue;
             do
             {
                 Console.WriteLine("Please enter the number of people in the first line");
-            } while (int.TryParse(Console.ReadLine(),out firstLine) == false);
-            int secondLine;
+            } while (int.TryParse(Console.ReadLine(),out firstQueue) == false);
+            int secondQueue;
             do
             {
                 Console.WriteLine("Please enter the number of people in the second line");
-            } while (int.TryParse(Console.ReadLine(), out secondLine) == false);            
+            } while (int.TryParse(Console.ReadLine(), out secondQueue) == false);            
             Thread t;
             //Creating two lists to hold threads for two different queues
             List<Thread> threadList1 = new List<Thread>();
             List<Thread> threadList2 = new List<Thread>();
             //Creating first queue of people using ATM1
-            for (int i = 1; i <= firstLine; i++)
+            for (int i = 1; i <= firstQueue; i++)
             {
                 t = new Thread(ATM1)
                 {
@@ -43,7 +43,7 @@ namespace Task_1
                 threadList1.Add(t);
             }
             //Creating second queue of people using ATM2
-            for (int i = 1; i <= secondLine; i++)
+            for (int i = 1; i <= secondQueue; i++)
             {
                 t = new Thread(ATM2)
                 {
@@ -52,20 +52,14 @@ namespace Task_1
                 threadList2.Add(t);
             }
             //Going through both lists and starting the threads almost instantly
-            for (int i = 0; i < threadList1.Count+threadList2.Count; i++)
+            for (int i = 0; i < threadList1.Count + threadList2.Count; i++)
             {
-                try
-                {
+                if (i<threadList1.Count)
                     threadList1[i].Start();
-                }
-                catch { }
-                try
-                {
+                if (i < threadList2.Count)
                     threadList2[i].Start();
-                   
-                }
-                catch { }
             }
+            Thread.Sleep(1);
             Console.WriteLine("All clients have been server. Remaining balance is " + Balance + " RSD.");
             Console.WriteLine("\t\t\tThank you for using BankSimulation!");
             Console.ReadLine();
@@ -83,18 +77,14 @@ namespace Task_1
                     Console.WriteLine(Thread.CurrentThread.Name + " is trying to withdraw " + temp + " RSD from ATM 1");
                     if (temp < Balance)
                     {
-                        Console.WriteLine("Money withdrawn successfully!");
                         Balance -= temp;
+                        Console.WriteLine("Money withdrawn successfully! Remaining bank balance is " + Balance);                        
                     }
-                    else
-                    {                        
-                        Console.WriteLine("Transaction terminated due to lack of balance");
-                    }
+                    else          
+                        Console.WriteLine("Transaction terminated due to lack of balance. Current bank balance is " + Balance);
                 }
                 else
-                {
                     Console.WriteLine("Bank is currently out of money.");
-                }
             }   
         }
         public static void ATM2()
@@ -110,14 +100,14 @@ namespace Task_1
                     Console.WriteLine(Thread.CurrentThread.Name + " is trying to withdraw " + temp + " RSD from ATM 2");
                     if (temp < Balance)
                     {
-                        Console.WriteLine("Money withdrawn successfully!");
                         Balance -= temp;
+                        Console.WriteLine("Money withdrawn successfully! Remaining bank balance is " + Balance);                        
                     }
                     else
-                    {
-                        Console.WriteLine("Transaction terminated due to lack of balance");
-                    }
+                        Console.WriteLine("Transaction terminated due to lack of balance. Current bank balance is " + Balance);
                 }
+                else
+                    Console.WriteLine("Bank is currently out of money.");
             }
         }
     }
