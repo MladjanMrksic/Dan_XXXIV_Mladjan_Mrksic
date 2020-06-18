@@ -10,11 +10,12 @@ namespace Task_1
     class Program
     {
         public static int Balance = 10000;
-        static readonly object l = new object();
+        static readonly object l1 = new object();
+        static readonly object l2 = new object();
         static readonly Random rnd = new Random();
         static void Main(string[] args)
         {
-            Console.WriteLine("/t/t/tWelcome to BankSimulation");
+            Console.WriteLine("\t\t\tWelcome to BankSimulation");
             int firstLine;
             do
             {
@@ -26,37 +27,48 @@ namespace Task_1
                 Console.WriteLine("Please enter the number of people in the second line");
             } while (int.TryParse(Console.ReadLine(), out secondLine) == false);
             Thread t;
-            List<Thread> threadList = new List<Thread>();
-            for (int i = 1; i <= firstLine+secondLine; i++)
+            List<Thread> threadList1 = new List<Thread>();
+            List<Thread> threadList2 = new List<Thread>();
+
+            for (int i = 1; i <= firstLine; i++)
             {
-                t = new Thread(DoSmth);
+                t = new Thread(ATM1);
                 t.Name = string.Format("Client " + i);
-                threadList.Add(t);
+                threadList1.Add(t);
+            }
+            for (int i = 1; i <= secondLine; i++)
+            {
+                t = new Thread(ATM2);
+                t.Name = string.Format("Client " + i);
+                threadList2.Add(t);
             }
 
-            for (int i = 0; i < threadList.Count; i++)
+            for (int i = 0; i < threadList1.Count+threadList2.Count; i++)
             {
-                if (i%2==0)
+                try
                 {
-                    threadList[i].Start(1);
+                    threadList1[i].Start();
+                    threadList1[i].Join();
                 }
-                else
-                {                    
-                    threadList[i].Start(2);
+                catch { }
+                try
+                {
+                    threadList2[i].Start();
+                    threadList2[i].Join();
                 }
-                
+                catch { }
             }
             Console.ReadLine();
         }
-        public static void DoSmth(object ATM)
+        public static void ATM1()
         {
-            lock (l)
+            lock (l1)
             {
                 if (Balance > 0)
                 {
                     
                     int temp = rnd.Next(100, 10000);
-                    Console.WriteLine(Thread.CurrentThread.Name + " is trying to withdraw " + temp + " RSD from ATM " + (int)ATM);
+                    Console.WriteLine(Thread.CurrentThread.Name + " is trying to withdraw " + temp + " RSD from ATM 1");
                     if (temp < Balance)
                     {
                         Console.WriteLine("Money withdrawn successfully!");
@@ -67,9 +79,28 @@ namespace Task_1
                         Console.WriteLine("Transaction terminated due to lack of balance");
                     }
                 }
+            }   
+        }
+        public static void ATM2()
+        {
+            lock (l2)
+            {
+                if (Balance > 0)
+                {
+
+                    int temp = rnd.Next(100, 10000);
+                    Console.WriteLine(Thread.CurrentThread.Name + " is trying to withdraw " + temp + " RSD from ATM 2");
+                    if (temp < Balance)
+                    {
+                        Console.WriteLine("Money withdrawn successfully!");
+                        Balance -= temp;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Transaction terminated due to lack of balance");
+                    }
+                }
             }
-            
-            
         }
     }
 }
