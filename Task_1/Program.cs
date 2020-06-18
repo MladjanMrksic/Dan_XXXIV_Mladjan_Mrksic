@@ -36,11 +36,19 @@ namespace Task_1
 
             for (int i = 0; i < threadList.Count; i++)
             {
-                threadList[i].Start();
+                if (i%2==0)
+                {
+                    threadList[i].Start(1);
+                }
+                else
+                {                    
+                    threadList[i].Start(2);
+                }
+                
             }
             Console.ReadLine();
         }
-        public static void DoSmth()
+        public static void DoSmth(object ATM)
         {
             lock (l)
             {
@@ -48,7 +56,7 @@ namespace Task_1
                 {
                     
                     int temp = rnd.Next(100, 10000);
-                    Console.WriteLine(Thread.CurrentThread.Name + " is trying to withdraw " + temp + " RSD.");
+                    Console.WriteLine(Thread.CurrentThread.Name + " is trying to withdraw " + temp + " RSD from ATM " + (int)ATM);
                     if (temp < Balance)
                     {
                         Console.WriteLine("Money withdrawn successfully!");
