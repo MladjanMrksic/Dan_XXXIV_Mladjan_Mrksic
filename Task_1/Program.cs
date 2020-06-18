@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Task_1
 {
@@ -16,20 +13,26 @@ namespace Task_1
         //Static readonly Random is used to avoid same values in a row
         static readonly Random rnd = new Random();
         static void Main(string[] args)
-        {            
+        {
             //Greeting message followed by user input for queue lenghts
             Console.WriteLine("\t\t\tWelcome to BankSimulation");
+            Console.WriteLine("If you wish to exit the application at any point, you can type in 'exit'.");
             int firstQueue;
+            string temp;
             do
             {
                 Console.WriteLine("Please enter the number of people in the first line");
-            } while (int.TryParse(Console.ReadLine(),out firstQueue) == false);
+                temp = Console.ReadLine().ToLower();
+                if (temp == "exit") Environment.Exit(0);
+            } while (int.TryParse(temp,out firstQueue) == false);
             int secondQueue;
             do
             {
                 Console.WriteLine("Please enter the number of people in the second line");
-            } while (int.TryParse(Console.ReadLine(), out secondQueue) == false);            
-            Thread t;
+                temp = Console.ReadLine().ToLower();
+                if (temp == "exit") Environment.Exit(0);
+            } while (int.TryParse(temp, out secondQueue) == false);            
+            Thread t;            
             //Creating two lists to hold threads for two different queues
             List<Thread> threadList1 = new List<Thread>();
             List<Thread> threadList2 = new List<Thread>();
@@ -52,16 +55,13 @@ namespace Task_1
                 threadList2.Add(t);
             }
             //Going through both lists and starting the threads almost instantly
-            for (int i = 0; i < threadList1.Count + threadList2.Count; i++)
+            for (int i = 0; i < Math.Max(threadList1.Count,threadList2.Count); i++)
             {
-                if (i<threadList1.Count)
+                if (i < threadList1.Count)
                     threadList1[i].Start();
                 if (i < threadList2.Count)
                     threadList2[i].Start();
             }
-            Thread.Sleep(1);
-            Console.WriteLine("All clients have been server. Remaining balance is " + Balance + " RSD.");
-            Console.WriteLine("\t\t\tThank you for using BankSimulation!");
             Console.ReadLine();
         }
         public static void ATM1()
@@ -85,6 +85,7 @@ namespace Task_1
                 }
                 else
                     Console.WriteLine("Bank is currently out of money.");
+                Console.WriteLine("\t\t\t* * *\t\t\t");
             }   
         }
         public static void ATM2()
@@ -108,6 +109,7 @@ namespace Task_1
                 }
                 else
                     Console.WriteLine("Bank is currently out of money.");
+                Console.WriteLine("\t\t\t* * *\t\t\t");
             }
         }
     }
